@@ -30,3 +30,17 @@ VALUES
 (9, 012345678903, 'Juegos de video', 2, 200);
 
 select * from products
+
+CREATE TRIGGER eliminar_producto_agotado
+ON products
+FOR UPDATE
+AS
+BEGIN
+    DECLARE @id_producto int;
+    SET @id_producto = (SELECT id_product FROM inserted);
+
+    IF (SELECT existencias FROM products WHERE id_product = @id_producto) = 0
+    BEGIN  -- Se agregó el bloque BEGIN
+        DELETE FROM products WHERE id_product = @id_producto;
+    END  -- Se agregó el bloque END
+END;
